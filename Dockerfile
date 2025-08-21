@@ -1,13 +1,10 @@
-# === Runtime stage ===
-FROM eclipse-temurin:17-jre-alpine
+# Use the official OpenJDK 17 image from Docker Hub
+FROM openjdk:17
+# Set working directory inside the container
 WORKDIR /app
-COPY --from=build /app/target/*.jar /app/app.jar
+# Copy the compiled Java application JAR file into the container
+COPY ./target/course-service.jar /app
+# Expose the port the Spring Boot application will run on
 EXPOSE 8080
-
-# Add validation script
-COPY healthcheck.sh /usr/local/bin/healthcheck.sh
-RUN chmod +x /usr/local/bin/healthcheck.sh
-
-HEALTHCHECK --interval=30s --timeout=5s --retries=3 CMD /usr/local/bin/healthcheck.sh
-
-ENTRYPOINT ["java","-jar","/app/app.jar"]
+# Command to run the application
+CMD ["java", "-jar", "course-service.jar"]
